@@ -1,6 +1,6 @@
 # simple-bank-system
 team work for Software Engineering course
-#简易银行卡管理系统#
+# 简易银行卡管理系统 #
 * 开户
     创建一个新的账户，接受用户输入的身份证号，以及账户密码，判断用户输入的身份证号是否唯一且账户密码是否符合要求，如验证成功则为该用户生成一个唯一的帐号。
 * 存款
