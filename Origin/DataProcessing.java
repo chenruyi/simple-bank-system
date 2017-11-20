@@ -73,12 +73,12 @@ public  class DataProcessing {
 			return false;
 	}	
             
-	public void disconnectFromDB() {
-		if ( connectToDB ){
-			// close Statement and Connection                                                     
-			connectToDB = false;                                      
-		} 
-   }           
+	// public void disconnectFromDB() {
+	// 	if ( connectToDB ){
+	// 		// close Statement and Connection                                                     
+	// 		connectToDB = false;                                      
+	// 	} 
+ //   }           
 
 	
 	public static void main(String[] args) {		
