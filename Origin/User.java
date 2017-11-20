@@ -59,7 +59,7 @@ public abstract class User {
 				exitSystem();
 				break;
 			case 6:
-				System.out.print(" ‰»Î–¬√‹¬Î: ");
+				System.out.print(": ");
 				String new_password = scanner.next();
 				try {
 					if(this.changeUserInfo(new_password)){
@@ -80,9 +80,20 @@ public abstract class User {
 		}
 	
 
-	public boolean saveMoney(unsigned int sum){
+	public boolean saveMoney(){
+		System.out.println("Input sum of money:");
+		unsigned int sum = scanner.next();
+		unsigned new_deposit = this.getDeposit + sum;
+		try {
+			if(this.setDeposit(new_deposit)){
+				System.out.println("Deposit: " + this.getDeposit());
+			}else {
+				System.out.println("Operation failed!");
+			}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
 		return false;
-
 	}
 
 	public boolean withdrewMoney(unsigned int sum){
@@ -111,6 +122,11 @@ public abstract class User {
 	}
 
 	public boolean showDeposit(){
+		return false;
+
+	}
+
+	public boolean showHistory(){
 		return false;
 
 	}
