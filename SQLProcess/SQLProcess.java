@@ -23,6 +23,12 @@ public class SQLProcess {
 		return false;
 	}
 	
+	//删除账户
+	public Boolean deleteUser(String user_num)
+	{
+		return false;
+	}
+	
 	//修改密码
 	public Boolean changePassword(String user_num, String newPassword)
 	{
@@ -47,5 +53,23 @@ public class SQLProcess {
 	{
 		String history[][] = null;
 		return history;
+	}
+	
+	//修改余额
+	public Boolean changeBalance(String user_num, String balance)
+	{
+		return false;
+	}
+	
+	//插入一条历史记录
+	public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,String balance)
+	{
+		return false;
+	}
+	
+	//修改挂失标志位
+	public Boolean changeLoss(String user_num, String loss)
+	{
+		return false;
 	}
 }
