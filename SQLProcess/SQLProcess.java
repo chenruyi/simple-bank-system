@@ -37,7 +37,7 @@ import java.sql.Statement;
 public class SQLProcess {
 
 	//开户
-	public Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
+	public static Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
 	{
 		Connection connection;
 		Statement statement;
@@ -127,7 +127,7 @@ public class SQLProcess {
 	}
 	
 	//登录时账号验证
-	public Boolean searchUser(String user_num, String user_password)
+	public static Boolean searchUser(String user_num, String user_password)
 	{
 		Connection connection;
 		Statement statement;
@@ -158,7 +158,7 @@ public class SQLProcess {
 				resultSet.close();                        
 	            statement.close();                        
 	            connection.close();
-				return false;
+	            return false;
 			}
 	    }catch(ClassNotFoundException e ){
 	    	System.out.println("数据库驱动错误");
@@ -326,7 +326,7 @@ public class SQLProcess {
 	}
 	
 	//修改挂失标志位
-	public Boolean changeLoss(String user_num, String loss)
+	public static Boolean changeLoss(String user_num, String loss)
 	{
 		Connection connection;
 		Statement statement;
