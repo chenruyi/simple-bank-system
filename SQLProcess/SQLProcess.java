@@ -6,7 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/*
+ * 数据库操作函数：
+ * 1、开户：               public Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
+ * 2、销户：               public Boolean deleteUser(String user_num)
+ * 3、修改密码：            public Boolean changePassword(String user_num, String newPassword)
+ * 4、账户验证：            public Boolean searchUser(String user_num, String user_password)
+ * 5、查询指定user信息：     public String[] queryUser(String user_num)
+ * 6、查询指定卡的history信息：public String[][] queryHistory(String user_num)
+ * 7、修改余额：            public Boolean changeBalance(String user_num, String balance)
+ * 8、插入一条history记录：  public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,String balance)
+ * 9、修改挂失标志位：       public Boolean changeLoss(String user_num, String loss)
+ * 
+ */
 /*
 数据库表结构：
 1、user：   id_num            //身份证号(char)
