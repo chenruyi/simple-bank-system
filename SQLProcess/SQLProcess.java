@@ -14,8 +14,8 @@ import java.sql.Statement;
  * 4、账户验证：            public Boolean searchUser(String user_num, String user_password)
  * 5、查询指定user信息：     public String[] queryUser(String user_num)
  * 6、查询指定卡的history信息：public String[][] queryHistory(String user_num)
- * 7、修改余额：            public Boolean changeBalance(String user_num, String balance)
- * 8、插入一条history记录：  public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,String balance)
+ * 7、修改余额：            public Boolean changeBalance(String user_num, float balance)
+ * 8、插入一条history记录：  public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,float balance)
  * 9、修改挂失标志位：       public Boolean changeLoss(String user_num, String loss)
  * 
  */
@@ -266,7 +266,7 @@ public class SQLProcess {
 	}
 	
 	//修改余额
-	public Boolean changeBalance(String user_num, String balance)
+	public Boolean changeBalance(String user_num, float balance)
 	{
 		Connection connection;
 		Statement statement;
@@ -296,7 +296,7 @@ public class SQLProcess {
 	}
 	
 	//插入一条历史记录
-	public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,String balance)
+	public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,float balance)
 	{
 		Connection connection;
 		Statement statement;
@@ -310,7 +310,7 @@ public class SQLProcess {
 			connection=DriverManager.getConnection(url, user, password);   
 			statement = connection.createStatement();                      //容器
 			
-			String sql="insert into history values('" + user_num + "','" + date + "','" + time + "','" + operation + "','" + balance + "'," + balance +")";   //SQL语句
+			String sql="insert into history values('" + user_num + "','" + date + "','" + time + "','" + operation + "','" + operator + "'," + balance +")";   //SQL语句
 	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
             statement.close();                        
             connection.close();  
