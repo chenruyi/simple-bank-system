@@ -1,9 +1,9 @@
-package Origin;
+// package Origin;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.sql.*;
 
-public  class DataProcessing {
+public class DataProcessing {
 
 	private static boolean connectToDB=false;
 	
@@ -33,8 +33,6 @@ public  class DataProcessing {
 	}
 		
 
-
-	
 	// public static boolean updateUser(String account, String password) throws SQLException{
 	// 	User user;	
 	// 	if (users.containsKey(account)) {
@@ -73,13 +71,6 @@ public  class DataProcessing {
 			return false;
 	}	
             
-	// public void disconnectFromDB() {
-	// 	if ( connectToDB ){
-	// 		// close Statement and Connection                                                     
-	// 		connectToDB = false;                                      
-	// 	} 
- //   }           
-
 	
 	public static void main(String[] args) {		
 

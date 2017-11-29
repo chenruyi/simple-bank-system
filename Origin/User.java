@@ -1,14 +1,14 @@
-package common;
+// package Origin;
 import java.sql.SQLException;
 import java.io.IOException;
 import java.util.*;
 import javax.swing.JFrame;
 
 
-public abstract class User {
+public class User {
 	private String account;
 	private String password;
-	private unsigned int deposit;
+	private int deposit;
 
 	Scanner scanner = new Scanner(System.in);
 	
@@ -78,12 +78,11 @@ public abstract class User {
 				break;
 			}	
 		}
-	
 
 	public boolean saveMoney(){
 		System.out.println("Input sum of money:");
-		unsigned int sum = scanner.next();
-		unsigned new_deposit = this.getDeposit + sum;
+		int sum = scanner.next();
+		new_deposit = this.getDeposit + sum;
 		try {
 			if(this.setDeposit(new_deposit)){
 				System.out.println("Deposit: " + this.getDeposit());
@@ -96,7 +95,7 @@ public abstract class User {
 		return false;
 	}
 
-	public boolean withdrewMoney(unsigned int sum){
+	public boolean withdrewMoney(int sum){
 		return false;
 
 	}
@@ -132,7 +131,7 @@ public abstract class User {
 	}
 
 
-	public void exitSystem(){
+	public void exitSystem() {
 		System.out.println("System exit..");
 		System.exit(0);
 	}
@@ -142,9 +141,6 @@ public abstract class User {
 		return account;
 	}
 
-	// public void setAccount(String account) {
-	// 	this.account = account;
-	// }
 
 	public String getPassword() {
 		return password;
@@ -154,11 +150,11 @@ public abstract class User {
 		this.password = new_password;
 	}
 
-	public unsigned int getDeposit() {
+	public int getDeposit() {
 		return deposit;
 	}
 
-	public void setDeposit(unsigned int new_deposit) {
+	public void setDeposit(int new_deposit) {
 		this.deposit = new_deposit;
 	}
 
