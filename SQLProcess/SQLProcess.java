@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 /*
  * 数据库操作函数：
  * 1、开户：               public Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
@@ -40,154 +42,118 @@ public class SQLProcess {
 	public static Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
 	{
 		Connection connection;
-		Statement statement;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
+		Statement statement = null;
+		connection = getcon();
 	    
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
+	    try{ 
 			statement = connection.createStatement();                      //容器
 			
 			String sql="insert into user values('" + id_num + "','" + user_num + "','" + user_password + "','" + loss + "'," + balance +")";   //SQL语句
-	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
-            statement.close();                        
-            connection.close();  
-            
+	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行            
             return true;
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
-	    }
+	    }finally {
+	       	ResultSet resultSet = null;
+			DBClose(resultSet, statement, connection); 
+		}
 	}
 	
 	//删除账户
-	public Boolean deleteUser(String user_num)
+	public static Boolean deleteUser(String user_num)
 	{
 		Connection connection;
-		Statement statement;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
+		Statement statement = null;
+		connection = getcon();
 	    
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
+	    try{   
 			statement = connection.createStatement();                      //容器
 			
-			String sql="DELETE FROM user WHERE user_num=" + user_num;   //SQL语句
+			String sql="DELETE FROM user WHERE user_num='" + user_num + "'";   //SQL语句
 	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
-            statement.close();                        
-            connection.close();  
             
             return true;
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
-	    }
+	    }finally {
+	    	ResultSet resultSet = null;
+			DBClose(resultSet, statement, connection); 
+		}
 	}
 	
 	//修改密码
-	public Boolean changePassword(String user_num, String newPassword)
+	public static Boolean changePassword(String user_num, String newPassword)
 	{
 		Connection connection;
-		Statement statement;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
-	    
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
+		Statement statement = null;
+		connection = getcon();
+	    try{  
 			statement = connection.createStatement();                      //容器
 			
-			String sql="UPDATE user SET user_password=" + newPassword + "WHERE user_num=" + user_num;   //SQL语句
+			String sql="UPDATE user SET user_password=" + newPassword + "WHERE user_num='" + user_num + "'";   //SQL语句
 	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
-            statement.close();                        
-            connection.close();  
             
             return true;
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
-	    }
+	    }finally {
+	    	ResultSet resultSet = null;
+			DBClose(resultSet, statement, connection); 
+		}
 	}
 	
 	//登录时账号验证
 	public static Boolean searchUser(String user_num, String user_password)
 	{
-		Connection connection;
-		Statement statement;
-		ResultSet resultSet;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
-	    
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
-			statement = connection.createStatement( 
-			         ResultSet.TYPE_SCROLL_INSENSITIVE,
-			         ResultSet.CONCUR_READ_ONLY );
-			String sql="SELECT * FROM user WHERE user_num=" + user_num;//获取一行的值
-			resultSet = statement.executeQuery(sql);
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		
+	    connection = getcon();
+	    try{ 
+			statement = connection.createStatement();
 			
-			if(resultSet.getString("user_password") == user_password)
-			{
-				resultSet.close();                        
-	            statement.close();                        
-	            connection.close();
-				return true;
+			String sql="select * from user where user_num='" + user_num + "'";
+			resultSet = statement.executeQuery(sql);
+
+			if(resultSet.next()){
+				String pwd=resultSet.getString("user_password");
+				System.out.println(pwd);
+				if(pwd.equals(user_password))
+				{
+					return true;
+				}
+				else return false;
 			}
 			else 
-			{
-				resultSet.close();                        
-	            statement.close();                        
-	            connection.close();
-	            return false;
+			{          
+				return false;
 			}
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
-	    }
+	    }finally {
+	    	DBClose(resultSet, statement, connection); 
+		}
 	}
 	
 	//查询user信息
-	public String[] queryUser(String user_num)
+	public static String[] queryUser(String user_num)
 	{
 		String cardInfo[] = {"","","","",""};
 		
 		Connection connection;
-		Statement statement;
-		ResultSet resultSet;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
+		Statement statement = null;
+		ResultSet resultSet = null;
+		connection = getcon();
+	    try{ 
 			statement = connection.createStatement( 
 			         ResultSet.TYPE_SCROLL_INSENSITIVE,
 			         ResultSet.CONCUR_READ_ONLY );
-			String sql="SELECT * FROM user WHERE user_num=" + user_num;
+			String sql="SELECT * FROM user WHERE user_num='" + user_num + "'";
 			resultSet = statement.executeQuery(sql);
 			String id=resultSet.getString("id_num");
 			String userNum=resultSet.getString("user_num");
@@ -201,40 +167,31 @@ public class SQLProcess {
 			cardInfo[2] = pwd;
 			cardInfo[3] = loss;
 			cardInfo[4] = balance;
-			
-			resultSet.close();                        
-            statement.close();                        
-            connection.close();  
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	//e.printStackTrace();
-	    }
+	    }finally {
+	    	DBClose(resultSet, statement, connection); 
+		}
 		
 		return cardInfo;
 	}
 	
 	//查询history信息
-	public String[][] queryHistory(String user_num)
+	public static String[][] queryHistory(String user_num)
 	{
 		String history[][] = new String[100][];
 		int p = 0;//数组赋值时的行号
 		
 		Connection connection;
-		Statement statement;
-		ResultSet resultSet;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
+		Statement statement = null;
+		ResultSet resultSet = null;
+		connection = getcon();
 	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
 			statement = connection.createStatement( 
 			         ResultSet.TYPE_SCROLL_INSENSITIVE,
 			         ResultSet.CONCUR_READ_ONLY );
-			String sql="SELECT * FROM history WHERE user_num=" + user_num;
+			String sql="SELECT * FROM history WHERE user_num='" + user_num + "'";
 			resultSet = statement.executeQuery(sql);
 			while(resultSet.next()) {
 			    String userNum = resultSet.getString("user_num");
@@ -253,105 +210,175 @@ public class SQLProcess {
 				history[p][5] = balance;
 				p++;
 			}
-			resultSet.close();                        
-            statement.close();                        
-            connection.close();  
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
-	    }
+	    }finally {
+	    	DBClose(resultSet, statement, connection); 
+		}
 		
 		return history;
 	}
-	
 	//修改余额
-	public Boolean changeBalance(String user_num, float balance)
+	public static Boolean changeBalance(String user_num, float balance)
 	{
 		Connection connection;
-		Statement statement;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
-	    
+		Statement statement = null;
+		connection = getcon();
 	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
 			statement = connection.createStatement();                      //容器
 			
-			String sql="UPDATE user SET balance=" + balance + "WHERE user_num=" + user_num;   //SQL语句
+			String sql="UPDATE user SET balance=" + balance + "WHERE user_num='" + user_num + "'";   //SQL语句
 	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
-            statement.close();                        
-            connection.close();  
             
             return true;
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
-	    }
+	    }finally {
+	    	ResultSet resultSet = null;
+			DBClose(resultSet, statement, connection); 
+		}
 	}
 	
 	//插入一条历史记录
-	public Boolean insertHistory(String user_num,String date,String time,String operation,String operator,float balance)
+	public static Boolean insertHistory(String user_num,String date,String time,String operation,String operator,float balance)
 	{
 		Connection connection;
-		Statement statement;
-		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
-	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
-	    String user="root";                                                // 数据库用户
-	    String password="123";
+		Statement statement = null;
+		connection = getcon();
 	    
-	    try{
-	    	Class.forName(driverName);		
-			connection=DriverManager.getConnection(url, user, password);   
+	    try{ 
 			statement = connection.createStatement();                      //容器
 			
 			String sql="insert into history values('" + user_num + "','" + date + "','" + time + "','" + operation + "','" + operator + "'," + balance +")";   //SQL语句
 	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
+            
+            return true;
+	    }catch(SQLException e){
+	    	System.out.println("数据库连接错误");
+	    	return false;
+	    }finally {
+	    	ResultSet resultSet = null;
+			DBClose(resultSet, statement, connection); 
+		}
+	}
+	
+	//修改挂失标志位
+	
+    public static Boolean changeLoss(String user_num, String loss)
+	{
+		Connection connection;
+		Statement statement;
+		connection = getcon();
+	    
+	    try{
+			statement = connection.createStatement();                      //容器
+			
+			String sql="UPDATE user SET loss=" + loss + "WHERE user_num='" + user_num + "'";   //SQL语句
+	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
             statement.close();                        
             connection.close();  
             
             return true;
-	    }catch(ClassNotFoundException e ){
-	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
 	    	return false;
 	    }
 	}
+
 	
-	//修改挂失标志位
-	public static Boolean changeLoss(String user_num, String loss)
+    public static Boolean transferAccounts(String user_num0,String user_num1, Float money)
+    {//user_num0转给user_num1
+    	    Connection connection;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		String balance0,balance1;
+		connection = getcon();
+	    try{
+			statement = connection.createStatement();                      //容器
+			
+			String sql = "select balance from user where user_num='" + user_num0 + "'";
+			resultSet = statement.executeQuery(sql);
+			balance0 = resultSet.getString(0);
+			
+			sql = "select balance from user where user_num='" + user_num1 + "'";
+			resultSet = statement.executeQuery(sql);
+			balance1 = resultSet.getString(0);
+			
+			float  balance0_float = Float.parseFloat(balance0) - money;
+			float  balance1_float = Float.parseFloat(balance1) + money;
+			
+			sql="UPDATE user SET balance=" + balance0_float + "WHERE user_num='" + user_num0 + "'";   //SQL语句
+	        statement.executeUpdate(sql);
+	        
+	        sql="UPDATE user SET balance=" + balance1_float + "WHERE user_num='" + user_num1 + "'";   //SQL语句
+	        statement.executeUpdate(sql);
+            
+            return true;
+	    }catch(SQLException e){
+	    	System.out.println("数据库连接错误");
+	    	return false;
+	    }finally {
+			DBClose(resultSet, statement, connection); 
+		}
+    }
+    
+    public static Connection getcon()
 	{
-		Connection connection;
-		Statement statement;
+		Connection connection = null;
 		String driverName="com.mysql.jdbc.Driver";                         // 加载数据库驱动类
 	    String url="jdbc:mysql://localhost:3306/simple_credit_card";       // 声明数据库的URL
 	    String user="root";                                                // 数据库用户
 	    String password="123";
 	    
 	    try{
-	    	Class.forName(driverName);		
+	     	Class.forName(driverName);		
 			connection=DriverManager.getConnection(url, user, password);   
-			statement = connection.createStatement();                      //容器
-			
-			String sql="UPDATE user SET loss=" + loss + "WHERE user_num=" + user_num;   //SQL语句
-	        statement.executeUpdate(sql);         //将sql语句上传至数据库执行
-            statement.close();                        
-            connection.close();  
-            
-            return true;
 	    }catch(ClassNotFoundException e ){
 	    	System.out.println("数据库驱动错误");
-	    	return false;
 	    }catch(SQLException e){
 	    	System.out.println("数据库连接错误");
-	    	return false;
 	    }
+		return connection;
+		
 	}
+	
+	public static void close(Connection con) {
+        if (con != null)
+            try {
+                con.close();
+            } catch (SQLException e) {
+                // 不做任何处理，静默处理
+            }
+    }
+ 
+    public static void close(ResultSet rs) {
+        if (rs != null)
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                // 不做任何处理，静默处理
+            }
+    }
+ 
+    public static void close(Statement stmt) {
+        if (stmt != null)
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                // 不做任何处理，静默处理
+            }
+    }
+   
+    public static void DBClose(ResultSet rs, Statement stmt, Connection conn) {
+        try {
+            close(rs);
+        } finally {
+            try {
+                close(stmt);
+            } finally {
+                close(conn);
+            }
+        }
+    }
 }
