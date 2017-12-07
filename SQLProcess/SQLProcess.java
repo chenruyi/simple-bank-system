@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 /*
  * 数据库操作函数：
  * 1、开户：               public Boolean addUser(String id_num, String user_num, String user_password, String loss, float balance)
