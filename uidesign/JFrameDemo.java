@@ -10,18 +10,11 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import javax.swing.JDesktopPane;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
-
-import javax.swing.JLabel;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import java.awt.Panel;
 import javax.swing.JPanel;
 
-import ui.BackgroundPanel;
+import Origin.User;
 
 import javax.swing.JButton;
 
@@ -37,6 +30,9 @@ public class JFrameDemo extends JFrame {
    // protected JButton btnReturn;
     private JPanel contentPane;
     private JButton btnReturn;
+    
+    protected User user;
+
 
 //    protected JPanel contentPane;
 //    protected JPanel backgroundPane;
@@ -64,11 +60,19 @@ public class JFrameDemo extends JFrame {
     public JFrameDemo() {
        
         init();
+      
         
     }
     public JFrameDemo(JFrame parentframe) {
         init();
         this.parentFrame = parentframe;
+        
+    }
+    public JFrameDemo(JFrame parentframe,User user) {
+        init();
+        this.parentFrame = parentframe;
+        this.user = user;
+        
     }
     
     private void init() {
@@ -83,7 +87,7 @@ public class JFrameDemo extends JFrame {
         setContentPane(contentPane);
         
     }
-    public void setBackgroundImg(JPanel panel) {
+    public  void setBackgroundImg(JPanel panel) {
         File f = new File("C:\\Users\\chen\\Desktop\\back.jpg");
         BufferedImage  bufimage = new BufferedImage(300, 300,BufferedImage.SCALE_DEFAULT);
         Image image;
@@ -102,16 +106,10 @@ public class JFrameDemo extends JFrame {
         backgroundPane.setSize(this.contentPane.getSize());
         backgroundPane.setPreferredSize(contentPane.getPreferredSize());
         contentPane.add(backgroundPane);
-//        JPanel backgroundPane = new JPanel();
-//        backgroundPane.setBounds(0, 0, 432, 253);
-//        backgroundPane.setSize(panel.getSize());
+
         panel.add(backgroundPane);
         
-//        JLabel lblNewLabel = new JLabel();
-//        
-//        lblNewLabel.setIcon(new ImageIcon("C:\\Users\\chen\\Desktop\\back.jpg"));
-//        lblNewLabel.setSize(backgroundPane.getSize());
-//        backgroundPane.add(lblNewLabel);
+
     }
 
     

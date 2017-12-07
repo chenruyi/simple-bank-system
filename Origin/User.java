@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class User {
 	private String account;
 	private String password;
-	private int deposit;
+	private float deposit;
 
 	Scanner scanner = new Scanner(System.in);
 	
@@ -58,8 +58,8 @@ public class User {
 	public boolean saveMoney(){
 		System.out.println("Input sum of money:");
 		String str = scanner.next();
-		int sum = Integer.parseInt(str);
-		int new_deposit = this.getDeposit() + sum;
+		float sum = Float.parseFloat(str);
+		float new_deposit = this.getDeposit() + sum;
 		if(this.setDeposit(new_deposit)){
 			System.out.println("Deposit: " + this.getDeposit());
 		}else {
@@ -124,11 +124,11 @@ public class User {
 		return true;
 	}
 
-	public int getDeposit() {
+	public float getDeposit() {
 		return deposit;
 	}
 
-	public boolean setDeposit(int new_deposit) {
+	public boolean setDeposit(float new_deposit) {
 		this.deposit = new_deposit;
 		return true;
 	}

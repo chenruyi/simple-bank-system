@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Origin.User;
 import uidesign.JFrameDemo.JButtonReturnListener;
 
 import javax.swing.JButton;
@@ -54,6 +55,14 @@ public class FeedBackFrame extends JFrameDemo {
         this.parentFrame = pframe;
         init();
     }
+    
+    public FeedBackFrame(JFrame pframe, User user) {
+        super(pframe, user);
+        init();
+        this.parentFrame = pframe;
+        this.user = user;
+    }
+    
     private void init() {
         setTitle("反馈");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,11 +88,12 @@ public class FeedBackFrame extends JFrameDemo {
                 try {
                     FileWriter fr = new FileWriter("feedback.txt");
                     Date  da = new Date();
-                    fr.write(da.toString()+":\n"+ textArea.getText());
+                    fr.write(da.toString()+":\n"+"卡号为："+user.getAccount()+":"+ textArea.getText());
                     JOptionPane.showMessageDialog(null, "提交成功");
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "失败");
                 }
                 
                 

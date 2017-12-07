@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import SQLProcess.SQLProcess;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -13,6 +16,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RescissionLossFrame extends JFrameDemo {
 
@@ -90,9 +95,16 @@ public class RescissionLossFrame extends JFrameDemo {
         btnSubmit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 判断1.卡号，2.密码 3.身份证号码，
-                if (true) {
+                Date da =new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                String s =formatter.format(da);
+                
+                if (SQLProcess.changeLoss(user.getAccount(), "1") 
+                        && SQLProcess.insertHistory(user.getAccount(), s.substring(0, 10),s.substring(11, 8), "解除挂失", user.getAccount(), 0.0f)) {
+                 
                     JOptionPane.showMessageDialog(null, "解除挂失成功");
+                }else {
+                    JOptionPane.showMessageDialog(null, "解除挂失失败");
                 }
             }
         });

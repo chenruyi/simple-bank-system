@@ -12,6 +12,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+import Origin.Main;
+import Origin.User;
+import SQLProcess.SQLProcess;
+
 public class ChangePasswordFrame extends JFrameDemo {
 
     /**
@@ -19,6 +23,8 @@ public class ChangePasswordFrame extends JFrameDemo {
      */
     private static final long serialVersionUID = 1L;
 
+   
+    
     private String oldPassword;
     private String newPassword;
 
@@ -46,6 +52,21 @@ public class ChangePasswordFrame extends JFrameDemo {
         init();
     }
 
+    public ChangePasswordFrame(JFrame pframe) {
+        super(pframe);
+        init();
+        this.parentFrame = pframe;
+    }
+    
+    public ChangePasswordFrame(JFrame pframe,User user) {
+        super(pframe,user);
+        init();
+        this.parentFrame = pframe;
+        this.user = user;
+    }
+    
+  
+    
     private void init() {
         setTitle("修改密码");
         setBounds(100, 100, 450, 300);
@@ -90,7 +111,7 @@ public class ChangePasswordFrame extends JFrameDemo {
         pfNewPassword2.setBounds(113, 123, 217, 24);
         contentPane.add(pfNewPassword2);
 
-        this.setBackgroundImg(contentPane);
+        
 
         JButton btnSubmit = new JButton("提交");
         btnSubmit.setBounds(29, 213, 113, 27);
@@ -111,10 +132,15 @@ public class ChangePasswordFrame extends JFrameDemo {
                     pfNewPassword.setText("");
                     pfNewPassword2.setText("");
                 } else {
-                    JOptionPane.showMessageDialog(null, "提交成功");
-                    LoginFrame loginframe = new LoginFrame();
-                    loginframe.setVisible(true);
-                    dispose();
+                   // SQLProcess.SQLProcess.changePassword(user.getAccount(),newPassword) ;
+                    if(SQLProcess.changePassword(user.getAccount(),newPassword) ) {
+                        JOptionPane.showMessageDialog(null, "修改成功");
+                        LoginFrame loginframe = new LoginFrame();
+                        loginframe.setVisible(true);
+                        dispose();
+                    }else {
+                        JOptionPane.showMessageDialog(null, "修改失败");
+                    }
                 }
 
             }
@@ -127,28 +153,26 @@ public class ChangePasswordFrame extends JFrameDemo {
         contentPane.add(btnReturn);
         btnReturn.addMouseListener(new JButtonReturnListener());
 
+        
+        
+        setBackgroundImg(contentPane);
     }
 
-    public ChangePasswordFrame(JFrame pframe) {
-        super(pframe);
-        init();
-        this.parentFrame = pframe;
-    }
+   
 
     public String getNewPassword() {
         return newPassword;
     }
 
     private int setNewPassword(String newPassword, String newPassword2) {
-        // if()//判断原密码是否正确
-        //
-        if (newPassword.equals(newPassword2)) {
-            this.newPassword = newPassword;
-            return 0;
-        } else {
-            return 1;
-        }
-
+       if(newPassword.length() == 6 && newPassword2.length() == 6)
+       {
+           if (newPassword.equals(newPassword2)) {
+               this.newPassword = newPassword;
+               return 0;
+           } 
+       }
+       return 1;
     }
 
     public String getOldPassword() {
@@ -156,10 +180,7 @@ public class ChangePasswordFrame extends JFrameDemo {
     }
 
     public int setOldPassword(String oldpassword) {
-        // if()//如果密码不对
-        //
-
-        if (true) {
+        if(this.user.getPassword().equals(oldpassword)) {
             this.oldPassword = oldpassword;
             return 0;
         }

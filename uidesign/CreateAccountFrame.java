@@ -1,5 +1,8 @@
 package uidesign;
 import IDValidator.IDValidator;
+import Origin.Main;
+import Origin.User;
+import SQLProcess.SQLProcess;
 
 import java.awt.EventQueue;
 
@@ -14,6 +17,8 @@ import javax.swing.JPasswordField;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 public class CreateAccountFrame extends JFrameDemo {
 
     /**
@@ -23,6 +28,8 @@ public class CreateAccountFrame extends JFrameDemo {
     private String password; //密码
     private String cardid;   //卡号
     private String IDnumber; //身份证号
+    
+    
     
     /**
      * Launch the application.
@@ -46,7 +53,8 @@ public class CreateAccountFrame extends JFrameDemo {
     public CreateAccountFrame() {
         init();
     }
-
+    
+    
     private void init() {
         setTitle("开户");
 
@@ -105,10 +113,18 @@ public class CreateAccountFrame extends JFrameDemo {
                }else if(setPassword(new String(tfPassword.getPassword()),new String(tfPassword2.getPassword()))!=0) {
                    JOptionPane.showMessageDialog(null,"两次输入的密码不想等");
                }else {
-                   JOptionPane.showMessageDialog(null, "提交成功");
-                   LoginFrame loginframe = new LoginFrame();
-                   loginframe.setVisible(true);;
-                   dispose();
+                   Date da =new Date();
+                   SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                   String s =formatter.format(da);
+                   
+                   if(SQLProcess.addUser(cardid,IDnumber , password, "", 0.0f)
+                           && SQLProcess.insertHistory(cardid, s.substring(0, 10),s.substring(11, 8), "增加", cardid, 0.0f)) {
+                   
+                       JOptionPane.showMessageDialog(null, "提交成功");
+                       LoginFrame loginframe = new LoginFrame();
+                       loginframe.setVisible(true);;
+                       dispose();
+                   }
                }
             }
         });
@@ -126,7 +142,8 @@ public class CreateAccountFrame extends JFrameDemo {
         btnReturn.setBounds(305, 213, 113, 27);
         contentPane.add(btnReturn);      
         
-        this.setBackgroundImg(contentPane);
+        setBackgroundImg(contentPane);
+
        
     }
 
@@ -135,11 +152,12 @@ public class CreateAccountFrame extends JFrameDemo {
     }
     private int setIDnumber(String s) {
         IDValidator validator = new IDValidator();
-        if(!validator.isValid(s)) {
-            return 1;
+        if(validator.isValid(s)) {
+            
+            this.IDnumber = s;
+            return 0;
         }
-        this.IDnumber = s;
-        return 0;
+        return 1;
     }
 
     
@@ -148,12 +166,12 @@ public class CreateAccountFrame extends JFrameDemo {
     }
     private int setPassword(String s1,String s2) {
         
-        if(!s1.equals(s2)) {
-            return 1;
+        if(s1.length() == 6 && s2.length() == 6 &&s1.equals(s2)) {
+            this.password = s1;
+            return 0;
         }
+        return 1;
         
-        this.password = s1;
-        return 0;
     }
 
     public String getCardid() {
@@ -161,12 +179,13 @@ public class CreateAccountFrame extends JFrameDemo {
         return cardid;
     }
     public int setCardid(String s) {
-//        if(!true) {
-//            return 1;
-//        }
+        if(s.matches("[0-9]{19}") ) {
+            this.cardid = s;
+            return 0;
+        }
+        return 1;
         
-        this.cardid = s;
-        return 0;
+       
     }
 
 }

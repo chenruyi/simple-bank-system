@@ -3,11 +3,17 @@ package uidesign;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import Origin.User;
+import SQLProcess.SQLProcess;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -50,6 +56,12 @@ public class DrawMoneyFrame extends JFrameDemo{
         this.parentFrame = pframe;
         init();
     }
+    public DrawMoneyFrame(JFrame pframe, User user) {
+        super(pframe, user);
+        init();
+        this.parentFrame = pframe;
+        this.user = user;
+    }
     private void init() {
         this.setBounds(100, 100, 450, 300);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,8 +92,15 @@ public class DrawMoneyFrame extends JFrameDemo{
                     JOptionPane.showMessageDialog(null,"金额只允许数字出现,且为正数，请检查输入");
                     
                 }else {
-                
-                JOptionPane.showMessageDialog(null, "提交成功");
+                    Date da =new Date();
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                    String s =formatter.format(da);
+                    if(SQLProcess.changeBalance(user.getAccount(), user.getDeposit()-drawMoneyNumber)
+                            && SQLProcess.insertHistory(user.getAccount(), s.substring(0, 10),s.substring(11, 8), "取款",user.getAccount() , 0.0f)) {
+                      JOptionPane.showMessageDialog(null, "取款成功");
+                    }else {
+                        JOptionPane.showMessageDialog(null, "取款失败");
+                    }
                 }
             }
             
@@ -110,11 +129,9 @@ public class DrawMoneyFrame extends JFrameDemo{
                 throw new NumberFormatException("输入的金额必须>0");
             }
             this.drawMoneyNumber = money;
-            
-        } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             return 0;
+        } catch (NumberFormatException e) {           
+            
         }
         
         return 1;

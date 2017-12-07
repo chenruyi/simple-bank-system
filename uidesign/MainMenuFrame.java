@@ -9,7 +9,9 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import ui.BackgroundPanel;
+import Origin.Main;
+import Origin.User;
+import SQLProcess.SQLProcess;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,6 +30,8 @@ public class MainMenuFrame extends JFrame {
     private JFrame mainmenuframe;
 
     private JPanel contentPane;
+    
+    private User user;
 
 
     /**
@@ -55,6 +59,12 @@ public class MainMenuFrame extends JFrame {
         mainmenuframe = this;
     }
 
+    public MainMenuFrame(User user) {
+        init();
+        mainmenuframe = this;
+        this.user = user;
+    }
+
     private void init() {
 
         this.setTitle("主菜单");
@@ -73,7 +83,7 @@ public class MainMenuFrame extends JFrame {
         btnReportLoss.setBounds(305, 173, 113, 27);
         btnReportLoss.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) { 
-                ReportLossFrame reportlossframe = new ReportLossFrame(mainmenuframe);
+                ReportLossFrame reportlossframe = new ReportLossFrame(mainmenuframe,user);
                 reportlossframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -84,7 +94,7 @@ public class MainMenuFrame extends JFrame {
         btnTransfer.setBounds(10, 86, 113, 27);
         btnTransfer.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                TransferAccountFrame transferaccountframe = new TransferAccountFrame(mainmenuframe);
+                TransferAccountFrame transferaccountframe = new TransferAccountFrame(mainmenuframe,user);
                 transferaccountframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -95,7 +105,7 @@ public class MainMenuFrame extends JFrame {
         btnWithdraw.setBounds(10, 46, 113, 27);
         btnWithdraw.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                DrawMoneyFrame drawmoneyframe = new DrawMoneyFrame(mainmenuframe);
+                DrawMoneyFrame drawmoneyframe = new DrawMoneyFrame(mainmenuframe,user);
                 drawmoneyframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -106,7 +116,7 @@ public class MainMenuFrame extends JFrame {
         btnDeposit.setBounds(305, 46, 113, 27);
         btnDeposit.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                DepositMoneyFrame depositmoneyframe = new DepositMoneyFrame(mainmenuframe);
+                DepositMoneyFrame depositmoneyframe = new DepositMoneyFrame(mainmenuframe,user);
                 depositmoneyframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -117,7 +127,7 @@ public class MainMenuFrame extends JFrame {
         btnChangePassword.setBounds(10, 133, 113, 27);
         btnChangePassword.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                ChangePasswordFrame changepasswordframe = new ChangePasswordFrame(mainmenuframe);
+                ChangePasswordFrame changepasswordframe = new ChangePasswordFrame(mainmenuframe,user);
                 changepasswordframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -128,7 +138,7 @@ public class MainMenuFrame extends JFrame {
         btnGetBalance.setBounds(305, 86, 113, 27);
         btnGetBalance.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                GetBalanceFrame getbalanceframe = new GetBalanceFrame(mainmenuframe);
+                GetBalanceFrame getbalanceframe = new GetBalanceFrame(mainmenuframe,user);
                 getbalanceframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -139,7 +149,8 @@ public class MainMenuFrame extends JFrame {
         btnViewHistory.setBounds(305, 133, 113, 27);
         btnViewHistory.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                ViewHistoryFrame viewhistoryframe = new ViewHistoryFrame(mainmenuframe);
+                ViewHistoryFrame viewhistoryframe = new ViewHistoryFrame(mainmenuframe,user);
+                viewhistoryframe.addItem(SQLProcess.queryHistory(user.getAccount()));
                 viewhistoryframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -150,7 +161,7 @@ public class MainMenuFrame extends JFrame {
         btnCloseAccount.setBounds(10, 173, 113, 27);
         btnCloseAccount.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                CloseAccountFrame closeaccountframe = new CloseAccountFrame(mainmenuframe);
+                CloseAccountFrame closeaccountframe = new CloseAccountFrame(mainmenuframe,user);
                 closeaccountframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
@@ -171,13 +182,15 @@ public class MainMenuFrame extends JFrame {
         btnFeedBack.setBounds(305, 213, 113, 27);
         btnFeedBack.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent arg0) {
-                FeedBackFrame feedbackframe = new FeedBackFrame(mainmenuframe);
+                FeedBackFrame feedbackframe = new FeedBackFrame(mainmenuframe,user);
                 feedbackframe.setVisible(true);
                 mainmenuframe.setVisible(false);
             }
         });
         contentPane.add(btnFeedBack);
 
+        
+        //添加背景
         File f = new File("C:\\Users\\chen\\Desktop\\back.jpg");
         BufferedImage  bufimage = new BufferedImage(300, 300,BufferedImage.SCALE_DEFAULT);
         Image image;

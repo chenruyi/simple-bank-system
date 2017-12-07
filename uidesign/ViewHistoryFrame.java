@@ -8,6 +8,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
+
+import Origin.User;
+
 import javax.swing.JPanel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -45,10 +48,18 @@ public class ViewHistoryFrame extends JFrameDemo {
         init();
     }
     
+    
+    
     public ViewHistoryFrame(JFrame pframe) {
         super(pframe);
         this.parentFrame = pframe;
         init();
+    }
+    public ViewHistoryFrame(JFrame pframe, User user) {
+        super(pframe, user);
+        init();
+        this.parentFrame = pframe;
+        this.user = user;
     }
     
     public void init() {
@@ -56,6 +67,18 @@ public class ViewHistoryFrame extends JFrameDemo {
         setBounds(100, 100, 450, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
+        
+        tablemodel = new DefaultTableModel(
+                new Object[][] {
+                    {null, null, null, null},
+                
+                },
+                new String[] {
+                    "\u65E5\u671F", "\u65F6\u95F4", "\u64CD\u4F5C", "\u4F59\u989D"
+                }
+            );
+        tablemodel.setColumnCount(4);
+        tablemodel.setRowCount(20);
         
         JPanel contentPane = new JPanel();
         contentPane.setBounds(0, 0, 432, 253);
@@ -73,36 +96,23 @@ public class ViewHistoryFrame extends JFrameDemo {
         
         contentPane.add(scrollPane);
         this.setBackgroundImg(contentPane);
-        
-        tablemodel = new DefaultTableModel(
-                new Object[][] {
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                    {null, null, null},
-                },
-                new String[] {
-                    "\u65F6\u95F4", "\u64CD\u4F5C", "\u4F59\u989D"
-                }
-            );
-        
+         
         JTable table =new JTable(tablemodel);
         
        
         scrollPane.setViewportView(table);
         
+    }
+    
+    public void addItem(String[][] history) {
+        for(int i=0;i<history.length;i++) {
+            String[] h = new String[4];
+            h[0] = history[i][1];//日期
+            h[1] = history[i][2];//时间
+            h[2] = history[i][3];//操作
+            h[3] = history[i][5];//余额
+            tablemodel.addRow(h);
+        }
     }
     
     

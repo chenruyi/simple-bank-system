@@ -1,96 +1,77 @@
 package Origin;
 import java.sql.SQLException;
-import java.util.*;
+
+import javax.swing.JOptionPane;
+
+import SQLProcess.SQLProcess;
+import uidesign.CreateAccountFrame;
+import uidesign.LoginFrame;
+import uidesign.MainMenuFrame;
+import uidesign.ReportLossFrame;
 
 public class Main {
-
+    //public static SQLProcess sqlprocess ;//= new SQLProcess();
 	public static void main(String[] args) throws SQLException {
-		try(Scanner scanner = new Scanner(System.in)){
-			while(true){
-				System.out.println("---Menu---");
-				System.out.println("0.退出");
-				System.out.println("1.登陆");
-				System.out.println("2.开户");
-				System.out.println("3.挂失");
-				System.out.println("----------");
-				int choice;
-				while(true){
-					try{				
-						System.out.print("Choose: ");
-						choice = scanner.nextInt();		
-						break;
-						}
-					catch(InputMismatchException e){
-						System.out.println("Illegal input, please try again");
-						scanner.nextLine();
-					}
-				}
-				
-				switch(choice){
-				case 0: //退出
-					System.out.println("Quit...");
-					return;
-				case 1: //登陆
-					System.out.print("用户名: ");
-					String account = scanner.next();
-					System.out.print("密码: ");
-					String password = scanner.next();
-					User user = null;
-					while(true){
-						try{
-							user = DataProcessing.searchUser(account, password);
-							break;
-						}
-						catch(SQLException e){
-							System.out.println(e.getMessage());
-							System.out.println("Connecting failed...");
-						}
-					}
-					if(user != null){
-						System.out.println("...Loading");
-						user.showMenu();
-					}
-					else{
-						System.out.println("...failed");
-					}
-					break;
-				case 2: //开户
-					System.out.print("身份证号: ");
-					String ID = scanner.next();
-					if(DataProcessing.IDs.containsKey(ID)) {
-						System.out.println("该身份证已注册！");
-						break;
-					}else {
-						System.out.print("用户名: ");
-						String new_account = scanner.next();
-						System.out.print("密码: ");
-						String new_password = scanner.next();
-						System.out.print("再次输入密码: ");
-						String check_password = scanner.next();
-						if(check_password != new_password) {
-							System.out.println("密码不一致！");
-							break;
-						}
-						while(true){
-							try{
-								if(DataProcessing.insertUser(ID, new_account, new_password))
-									System.out.println("开户成功！");
-								else
-									System.out.println("用户名已存在！");
-								break;
-							}
-							catch(SQLException e){
-								System.out.println(e.getMessage());
-								System.out.println("连接失败！");
-							}
-						}
-					}
-					break;
-				default:
-					System.out.println("Undefined choice");
-					break;
-				}
-			}
-		}
+		 Main m = new Main();
+		 m.showLoginFrame();
+		
 	}
+
+    
+    public void creatAccount() {
+        CreateAccountFrame creatAccountFrame = new CreateAccountFrame();
+        creatAccountFrame.setVisible(true);
+        if(creatAccountFrame.isDisplayable()) {
+            this.showLoginFrame();
+        }
+    }
+    
+    public void showLoginFrame() {
+        LoginFrame loginframe =new LoginFrame();
+        loginframe.setVisible(true);
+        
+        
+        while(true) {
+            if(loginframe.getActionChoice() == LoginFrame.LOGIN_ACCOUNT) {
+                String user_password = loginframe.getPassword();
+                String userid = loginframe.getUsername();
+                if(SQLProcess.searchUser(userid, user_password)) {
+                    //String [] user = sqlprocess.queryUser(userid);
+                    if(SQLProcess.queryUser(userid)[0].equals("1")) {//未挂失
+                        User user = new User(userid,user_password);
+                        MainMenuFrame mainmenu = new MainMenuFrame(user);
+                        mainmenu.setVisible(true);
+                        loginframe.dispose();
+                        break;
+                    }
+                    else {
+                        JOptionPane.showMessageDialog( loginframe, "该账号在挂失中，无法登陆");
+                    }
+                }
+            }else if(loginframe.getActionChoice() == LoginFrame.CREAT_ACCOUNT) {
+                
+                this.creatAccount() ;
+                break;
+            }else if(loginframe.getActionChoice() == LoginFrame.RESCISSION_LOSS) {
+                
+                this.showReportLossFrame();
+                break;
+            }
+        
+        }
+        
+    }
+    public void showReportLossFrame() {
+        ReportLossFrame reportlossFrame = new ReportLossFrame();
+        reportlossFrame.setVisible(true);
+        if(reportlossFrame.isDisplayable()) {
+            this.showLoginFrame();
+        }
+    }
+    
+    
+    
+    
+    
+    
 }
